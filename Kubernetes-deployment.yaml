@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <deployment_name>
+  labels:
+    app: <app_name>
+spec:
+  replicas: <number_of_replicas>
+  selector:
+    matchLabels:
+      app: <app_name>
+  template:
+    metadata:
+      labels:
+        app: <app_name>
+    spec:
+      containers:
+      - name: <container_name>
+        image: <image_name>:<tag>
+        ports:
+        - containerPort: <container_port>
+        # Add other container configuration options here
+        env:
+        - name: ENV_VARIABLE_NAME
+          value: ENV_VARIABLE_VALUE
+        # Define resource requests and limits
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        # Define liveness and readiness probes
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: <container_port>
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: <container_port>
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        # Define volume mounts (if needed)
+        volumeMounts:
+        - name: <volume_name>
+          mountPath: /path/in/container
+      # Define volumes (if needed)
+      volumes:
+      - name: <volume_name>
+        emptyDir: {}
